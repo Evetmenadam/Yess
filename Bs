@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Brawl Stars Sohbet ve İpuçları</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #ffcc00;
+            padding: 20px;
+            text-align: center;
+        }
+        #chat-container, #tips-container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        #message-input {
+            width: 80%;
+            padding: 10px;
+        }
+        #send-button {
+            padding: 10px 20px;
+        }
+        #tips {
+            list-style-type: none;
+            padding: 0;
+        }
+        #tips li {
+            background-color: #ffeb3b;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Brawl Stars Sohbet ve İpuçları</h1>
+</header>
+
+<div id="chat-container">
+    <h2>Sohbet Odası</h2>
+    <div id="messages"></div>
+    <input type="text" id="message-input" placeholder="Mesajınızı yazın...">
+    <button id="send-button">Gönder</button>
+</div>
+
+<div id="tips-container">
+    <h2>Brawl Stars İpuçları</h2>
+    <ul id="tips">
+        <li>Kahramanınızı yükseltmek için yıldız parçalarını toplayın.</li>
+        <li>Haritaları iyi öğrenin ve stratejinizi buna göre belirleyin.</li>
+        <li>Takım arkadaşlarınızla koordineli hareket edin.</li>
+        <li>Her kahramanın güçlü ve zayıf yönlerini bilin.</li>
+        <li>Günlük görevleri tamamlayarak ekstra ödüller kazanın.</li>
+    </ul>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+    // TODO: Firebase yapılandırma bilgilerinizi buraya ekleyin
+    const firebaseConfig = {
+        apiKey: "AIzaSyCQ-kUJqfkjczSiygZKG_uhRQYrlGqmOd8",
+        authDomain: "brawl-stars-sohbet-odas.firebaseapp.com",
+        databaseURL: "https://brawl-stars-sohbet-odas-default-rtdb.firebaseio.com",
+        projectId: "brawl-stars-sohbet-odalar",
+        storageBucket: "brawl-stars-sohbet-odas.appspot.com",
+        messagingSenderId: "39426212933",
+        appId: "1:39426212933:web:edce59c6a787daee138f2c"
+    };
+
+    // Firebase başlatma
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const messagesRef = db.ref('messages');
+
+    // Mesajları gösterme
+    messagesRef.on('child_added', (snapshot) => {
+        const msg = snapshot.val();
+        const msgDiv = document.createElement('div');
+        msgDiv.textContent = msg;
+        document.getElementById('messages').appendChild(msgDiv);
+        // Scroll'u en alta kaydır
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    });
+
+    // Mesaj gönderme
+    document.getElementById('send-button').addEventListener('click', () => {
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value.trim();
+        if (message !== "") {
+            messagesRef.push(message);
+            messageInput.value = "";
+        }
+    });
+
+    // Enter tuşuyla mesaj gönderme
+    document.getElementById('message-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('send-button').click();
+        }
+    });
+</script>
+
+</body>
+</html>
